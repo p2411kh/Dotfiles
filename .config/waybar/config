@@ -1,0 +1,43 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 35,
+    "spacing": 16,
+    "margin": "5 10 5 10",
+
+
+    "modules-left": [
+        "hyprland/workspaces"
+
+    ],
+
+
+    "modules-center": [
+    "battery",
+    "clock",
+    "pulseaudio"
+    
+    ],
+
+
+    "modules-right": [
+        "tray",
+        
+        
+        
+
+    ],
+
+
+  "hyprland/workspaces": {
+    "format": "{icon} {windows}",
+    "on-click": "activate",
+    "persistent-workspaces": {
+      "*": 10
+    },
+   }, 
+
+
+
+}
+
