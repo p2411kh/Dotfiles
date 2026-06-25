@@ -1,0 +1,14 @@
+mode = drun
+
+width = 30%
+height = 40%
+location = center
+lines = 9
+hide_scroll = true
+
+insensitive = true
+allow_images = true
+gtk_dark = true
+single_click = true
+
+normal_window = false
