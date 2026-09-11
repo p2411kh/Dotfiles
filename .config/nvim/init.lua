@@ -7,9 +7,8 @@ vim.o.wrap = false
 vim.o.incsearch = true
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
-
-
-
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -32,9 +31,11 @@ require("lazy").setup({
     { "ellisonleao/gruvbox.nvim" },
     {
       "LazyVim/LazyVim",
+      import = "lazyvim.plugins", -- вот это ключевое
       opts = {
         colorscheme = "gruvbox",
       },
     },
+    { import = "plugins" }, -- если потом будешь класть свои плагины в lua/plugins/
   },
 })
