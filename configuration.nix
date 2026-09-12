@@ -1,19 +1,41 @@
-
-# ------        the configs create p2411kh          ------
-
 { config, pkgs, ... }:
 
+let
+  qylockSrc = pkgs.fetchFromGitHub {
+    owner = "Darkkal44";
+    repo = "qylock";
+    rev = "main";
+    sha256 = "sha256-AYoc6yEcp+yeud+GKkg5X8BKKSMq0ogEDuB4g+hosfs=";
+  };
+
+  winterTheme = pkgs.stdenv.mkDerivation {
+    pname = "sddm-theme-winter";
+    version = "1.0";
+    src = qylockSrc;
+    installPhase = ''
+      mkdir -p $out/share/sddm/themes
+      cp -r themes/winter $out/share/sddm/themes/winter
+    '';
+  };
+in
 {
   imports = [ ./hardware-configuration.nix ];
 
   # Загрузчик
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "nodev"; # для UEFI
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.efiInstallAsRemovable = true;
+  boot.loader = {
+    efi.canTouchEfiVariables = true;
+    limine = {
+      enable = true;
+      extraEntries = ''
+        /Windows
+            protocol: efi
+            path: boot():/EFI/Microsoft/Boot/bootmgfw.efi
+            comment: Boot Windows
+      '';
+    };
+  };
 
-
-    # Plymouth (заставка)
+  # Plymouth (заставка)
   boot.plymouth.enable = true;
   boot.plymouth.theme = "breeze";
   boot.kernelParams = [ "quiet" "splash" ];
@@ -46,21 +68,21 @@
   };
 
   # X11
-  #services.xserver.enable = true;
+  services.xserver.enable = true;
+  services.xserver.xkb.layout = "us,ru";
+  services.xserver.xkb.options = "grp:alt_shift_toggle";
 
-  # KDE Plasma 6
-  #services.desktopManager.plasma6.enable = true;
-  #services.displayManager.sddm.enable = true;
-  #services.xserver.xkb.layout = "us,ru";
-  #services.xserver.xkb.options = "grp:alt_shift_toggle";
+  # SDDM
+  services.displayManager.sddm = {
+    enable = true;
+    package = pkgs.kdePackages.sddm;   # обязательно Qt6-версия для QML-тем
+    wayland.enable = true;
+    theme = "winter";
+    extraPackages = with pkgs.kdePackages; [ qt5compat qtsvg qtmultimedia ];
+  };
 
   # Hyprland
-  #programs.hyprland.enable = true;
-
-  # gnome
-  #services.xserver.displayManager.gdm.enable = true;
-  #services.xserver.desktopManager.gnome.enable = true;
-
+  programs.hyprland.enable = true;
 
   # Звук (PipeWire)
   services.pipewire = {
@@ -80,7 +102,6 @@
   services.flatpak.enable = true;
   programs.fish.enable = true;
 
-  
   users.users.p2411kh = {
     shell = pkgs.fish;
     isNormalUser = true;
@@ -103,18 +124,25 @@
     }
   ];
 
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
-hardware.graphics = {
-  enable = true;
-  enable32Bit = true;
-};
-
-
-
-  # Системные пакеты
+  # Системные пакеты (оба списка объединены в один)
   environment.systemPackages = with pkgs; [
+    winterTheme
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+
     nano
+    bibata-cursors
     git
+    grim
+    kdePackages.dolphin
     htop
     wget
     fish
@@ -149,10 +177,8 @@ hardware.graphics = {
     #qt6Packages.qt6ct
     gcc
     gnumake
+    noctalia
   ];
-
-
-
 
   # Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
