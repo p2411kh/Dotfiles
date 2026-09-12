@@ -63,9 +63,8 @@ local ipc = "noctalia msg "
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
-hl.env("HYPRCURSOR_THEME", "BreezeX-Black")
-hl.env("HYPRCURSOR_SIZE", "24")
-
+hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("XCURSOR_SIZE", "24")
 
 -----------------------
 ----- PERMISSIONS -----
@@ -366,5 +365,3 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
-
-
