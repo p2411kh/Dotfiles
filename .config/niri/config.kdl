@@ -10,6 +10,5 @@ include "./cfg/rules.kdl"
 include "./cfg/privacy-block.kdl"
 include "./cfg/misc.kdl"
 
-include "noctalia.kdl"
 
 include "./cfg/game-mode.kdl"
